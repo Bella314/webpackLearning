@@ -353,10 +353,11 @@ url-loader封装了file-loader, 所以使用url-loader时需要安装file-loader
 ```
 
 ### babel
+作用：把新的语法转换为浏览器支持的语法
 
 1. `npm i babel-loader @babel/core @babel/preset-env webpack -D`
 
-2. 如果需要支持更高级的ES6语法, 可以继续安装插件:
+2. 如果需要支持更高级的ES6语法, 可以继续安装插件(可根据报错提示安装):
 
    `npm i @babel/plugin-proposal-class-properties -D`
 
@@ -387,6 +388,8 @@ url-loader封装了file-loader, 所以使用url-loader时需要安装file-loader
 
 如果需要使用`generator`，无法直接使用babel进行转换，因为会将`generator`转换为一个`regeneratorRuntime`，然后使用`mark`和`wrap`来实现`generator`
 
+generator（生成器）是ES6标准引入的新的数据类型。一个generator看上去像一个函数，但可以返回多次。
+
 但由于babel并没有内置`regeneratorRuntime`，所以无法直接使用
 
 需要安装插件:
@@ -395,7 +398,7 @@ url-loader封装了file-loader, 所以使用url-loader时需要安装file-loader
 
 同时还需安装运行时依赖:
 
-​	`npm i @babel/runtime -D`
+​	`npm i @babel/runtime -S`
 
 在`.babelrc`中添加插件:
 
@@ -412,16 +415,23 @@ url-loader封装了file-loader, 所以使用url-loader时需要安装file-loader
 ```
 
 如果需要使用ES6/7中对象原型提供的新方法，babel默认情况无法转换，即使用了`transform-runtime`的插件也不支持转换原型上的方法
+例如 数组的includes方法 `arr.includes()`
 
 需要使用另一个模块:
 
-​	`npm i @babel/polyfill -S`
+​	`BA`
 
 该模块需要在使用新方法的地方直接引入:
 
 ​	`import '@babel/polyfill'`
 
 ### source map的使用
+啥是sourceMap
+简单说，sourceMap就是一个文件，里面储存着位置信息。
+
+仔细点说，这个文件里保存的，是转换后代码的位置，和对应的转换前的位置。
+
+有了它，出错的时候，通过断点工具可以直接显示原始代码，而不是转换后的代码。
 
 #### devtool
 
@@ -479,7 +489,7 @@ url-loader封装了file-loader, 所以使用url-loader时需要安装file-loader
 2. 引入插件
 
    ```js
-   const CleanWebpackPlugin = require('clean-webpack-plugin')
+   const {CleanWebpackPlugin} = require('clean-webpack-plugin')
    ```
 
 3. 使用插件, 在plugins中直接创建对象即可
@@ -499,6 +509,8 @@ url-loader封装了file-loader, 所以使用url-loader时需要安装file-loader
 1. 安装插件
 
    `npm i copy-webpack-plugin -D`
+
+   作用：复制不需要打包的静态资源到 dist文件中
 
 2. 引入插件
 

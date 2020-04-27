@@ -1,6 +1,10 @@
 const path = require('path')
-// 
+// 生成根目录下文html 并自动引入js
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+// 每次npm run build 之前清除dist文件夹
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+// 拷贝不需要经过打包的静态资源
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = {
     // 入口文件配置
     entry:'./src/index.js',
@@ -34,8 +38,9 @@ module.exports = {
                     loader: 'url-loader',
                     options: {
                         limit: 5 * 1024,
+                        // 指定打包后输出的文件名
                         outputPath:'images',
-                        name:'[name]-[hash:4].[.ext]'
+                        name:'[name]-[hash:4].[ext]'
                     }
                 }]
             },
@@ -43,12 +48,38 @@ module.exports = {
                 test: /\.(woff|woff2|eot|svg|ttf)$/,
                 use: ['url-loader']
             },
+            {
+                test: /\.js$/,
+                use: [{
+                    loader: 'babel-loader',
+                    // 下列可以放到.babelrc文件中
+                    // options: {
+                    //     presets:['@babel/env'],
+                    //     plugins:[
+                    //         '@babel/plugin-proposal-class-properties', //支持es6的一些更高级的语法
+                    //         '@babel/plugin-transform-runtime'//支持generator生成器 
+                    //     ]
+                    // }
+                }],
+                // 不需要加载的文件夹
+                // exclude: /node_modules/
+                exclude: /node_modules/
+            },
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template:'./src/index.html'
-        })
-    ]
+        }),
+        new CleanWebpackPlugin(),
+        new CopyWebpackPlugin([
+            {
+                from: path.join(__dirname, 'assets'),
+                to: 'assets'
+            }
+        ])
+    ],
+    // source map 设置
+    devtool: 'cheap-module-eval-source-map' //可定位到源代码行数
 }

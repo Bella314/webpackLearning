@@ -1,0 +1,7 @@
+{
+    "presets":["@babel/env"],
+    "plugins":[
+        "@babel/plugin-proposal-class-properties", //支持es6的一些更高级的语法
+        "@babel/plugin-transform-runtime"//支持generator生成器 
+    ]
+}
